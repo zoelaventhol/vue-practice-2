@@ -5,27 +5,18 @@
     <div class="App">
         <h1>Picture time! 📸</h1>
 
-        <!-- button with @click to toggle showForm -->
         <button @click="showForm = !showForm">
-            <!-- Conditionally change button text: if form is showing, button should say "Hide form" -->
             <p v-if="showForm">Hide form</p>
-            <!-- Else (if form is hidden), should say "Add images!" -->
             <p v-else>Add images!</p>
         </button>
         
         <!-- INPUT FORM -->
-        <!-- Add v-if to form, so it only renders when "showForm" is true -->
         <form v-if="showForm">
-            Add image: 
-            <!-- Add v-model to save input as a variable in data -->
-            <input type="text" v-model="url"/>
-            <br />
-            <!-- Add @click event handler. ".prevent" to prevent the page refreshing. -->
-            <button @click.prevent="addImage">Submit</button>
+            <Form @submitted="(url) => addImage(url)"/>
         </form>
 
-        <!-- Render component -->
-        <ImageGrid :images="images" />
+        <!-- CONTENT: Featured image & image grid. Pass images as a prop -->
+        <Content :images="images" />
     </div>
 </template>
     
@@ -33,33 +24,32 @@
     - These will add data and functionality to our app.
     - We write them in Javascript. -->
 <script>
-    // import component (by file path)
+    // import components (by file path)
     import ImageGrid from "./components/ImageGrid.vue";
+    import Form from "./components/Form.vue";
+    import Content from "./components/Content.vue";
 
     export default {
         //  The name of our component. It should match the file name.
         name: 'App',
         // This is where we list any components we import.
         components: {
-            ImageGrid
+            ImageGrid,
+            Form, 
+            Content
         },
-        // This is where we create variables (in the return statement)
         data() {
             return {
-                // Add variables to save url from input, and to save all image urls together
-                url: "",
-                images: [],
-                // add variable to show or hide form
+                // Remove url variable (it's now in Form.vue instead)
+                images: ["https://cdn.pixabay.com/photo/2024/01/07/16/27/reed-8493547_1280.jpg"],
                 showForm: false
             }
         },
-        // This is where we define our functions.
         methods: {
-            addImage() {
-                // push image url into the images array
-                this.images.push(this.url);
-                // reset the form to blank
-                this.url = "";
+            // update addImage to accept URL as a parameter
+            addImage(url) {
+                // change from this.url to just url (aka the url received as a parameter)
+                this.images.push(url);
             },
  
         }

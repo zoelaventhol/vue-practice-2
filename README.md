@@ -92,12 +92,12 @@ Let's build our featured image.
 
 Remember:
 - We will need to click an image in our `ImageGrid` component, and have it appear in our `Featured` component. So we'll need to pass some data around.
-- When we're passing data throughout app, we need to follow the connections in our app's tree structure. This means that we _cannot_ pass data directly between sibling components. We need to pass through the _lowest common ancestor_:
+- When we're passing data throughout our app, we need to follow the connections in our app's tree structure. This means that we _cannot_ pass data directly between sibling components. We need to pass through the _lowest common ancestor_:
 ![image](readme-images/lca-2.png)
 ![image](readme-images/lca-1.png)
 
 Let's break this down into some sub-steps:
-1. Create a variable in your `Content`'s `data` to hold your `featured` image URL.
+1. Create a variable in your `Content`'s `data` to hold your `featured` image URL. Initalize it to `null`.
 
 2. Add an `@click` and event `$emit` to all `<img>`s in your `ImageGrid` component: when an image is clicked, it should `emit` that URL.
 

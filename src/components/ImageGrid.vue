@@ -9,12 +9,12 @@
         </div>
         <!-- IMAGE GRID -->
         <div class = "image-grid">
-            <!-- Create an <img> tag for each of your URLs using a v-for loop. Set your URL as the src attribute. -->
-            <!-- Add conditional class "big" when "isBig" is true -->
+            <!-- Add an click event listener to emit the event "setFeatured", and pass the url up to the parent -->
             <img 
                 v-for="url in images" 
                 :src = "url"
                 :class="{ big: isBig }"
+                @click="$emit('setFeatured', url)"
             />
 
         </div>
@@ -34,7 +34,6 @@
             // toggle isBig true or false
             toggle(state) {
                 this.isBig = state
-                console.log("isBig: ", this.isBig)
             }
         },
         // receive props
