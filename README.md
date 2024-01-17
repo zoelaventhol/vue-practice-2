@@ -12,97 +12,97 @@ npm install
 ```sh
 npm run dev
 ```
-testt
 
 ## Objective
-Review and practice basic Vue concepts, including:
-- Data binding
-- Components
-- Passing props
-- Conditional styling
-- Conditional rendering
+Review and practice intermediate Vue concepts, including:
+- Nested components (parents, children, grandchildren)
+- Passing props to descendants
+- Event emits
 
-We will do this by creating a simple form to display images from URLs, and to be able to make those images larger or smaller by clicking buttons.
-![image](demo_screenshots/step-6b.png)
+Last time, we created a simple form to display images from URLs, and made those images larger or smaller by clicking buttons.
+Now we will add:
+- Featured image at the top of the photo grid
+- Clicking any image in the grid will highlight it as the featured image
+
+
 
 ## Tasks
 
-### Step 1: Create a form
-In App.vue, create a simple form with one text input field and a submit button.
+### Step 1: Create component structure
+_Concepts: [nested components](https://vuejs.org/guide/essentials/component-basics) & [passing props](https://www.w3schools.com/vue/vue_props.php)_
 
-- A text ```input``` field labeled "Add image".
-- A ```div``` that will hold images. (No need to add images yet.)
-- A "Submit" button.
+Last time we started coding first, then broke our code into smaller components.
 
-![image](demo_screenshots/step-1.png)
+Now that we know how components work, let's start by creating a clean component structure for our code. Each part of our code that serves a different purpose, will have a different component:
+- form
+- image grid
+- featured image
 
-### Step 2: Add functionality
-_Data binding with v-model, and click events_
-Add functionality to your "Submit" button - when you click it, it should save your form input (an image URL), to your data.
+Let's also group together the image grid and featured image components into a parent called "Content".
 
-- Create data called "images", and initialize it as an empty array.
-- Add data binding to your input field.
-- On button click, push the input into your "images array".
-![image](demo_screenshots/step-2.png)
+You could visualize your component structure like this:
+![image](readme-images/components-1.png)
+Or this:
+![image](readme-images/components-2.png)
 
-### Step 3: Display your images
-_Looping with v-for_
-Render all of your saved images in your image grid.
+To accomplish this:
+- In your `components` folder, create files called 
+  - `Form.vue`
+  - `Featured.vue`
+  - `Content.vue`
+- Move the code for your form (including the "Add images" button) into `Form.vue`
 
-- Using ```v-for```, loop through your "images" data, and create an ```<img>``` tag for each one.
-- Add some styling so that your images are a manageable size, arranged in a grid, evenly spaced and centered.
-- When you add a new image with your "Submit" button, it should appear automatically in your grid.
+- For all of your new files, make sure the structure (`<template>`, `<script>`, `<style>`) and names (in your `export`s) are correct.
 
-![image](demo_screenshots/step-3.png)
-
-### Step 4: Separate your image grid into its own component
-_Components and passing props_
-Our App.vue is getting a little long -  let's separate the image grid into its own component!
-
-- Create a folder called "components", and inside that, create a file called "ImageGrid.vue"
-- Move the relevant HTML (the code in `<template>`) for your image grid into that component (and delete from App.vue)
-- Make sure you're importing, exporting, and rendering everything correctly:
-  - Make sure the structure and names of your new `ImageGrid` file are correct.
-  - Import your `ImageGrid` file to App.vue and list it in your components.
-  - Render your `<ImageGrid>` component in your App's `<template>`.
-  - Pass your "images" data to `ImageGrid` as a prop. Remember you need to pass it down from the App, and receive it in `ImageGrid`.
+- Connect all your components:
+    1. `import` the component to its parent.
+    2. List the component in the parent's `components`
+    3. Render the component in the parent's `<template>`
+- Pass all your props:
+    1. Pass props _down_ to child component(s) by including them _inside_ the component tag in the `<template>`. Ex:
+    ```sh
+    <ImageGrid :images="images" />
+    ```
+    2. _Receive_ props in the child component by listing them in `props`. Ex:
+    ```sh
+    props: ['images']
+    ```
 
 
-### Step 5: Conditional styling
-In your ```ImageGrid```, create buttons that say "big" and "small".
-Clicking the "big" button should make the size of your images bigger. Clicking "small" should return them to their original size.
-Whichever size is "active" should be clear in the button styling. i.e. If your images are bigger, the "big" button should be highlighted somehow. If the images are small, the "small" button should be highlighted to show that this is the active state.
+### Step 2: Connect your form
+_Concept: [Event emits](https://vuejs.org/guide/components/events.html)_
 
-- Create data called "isBig" and initialize it to false.
-- Create a class ```.active```, and add some styling that will highlight the active button.
-- Add conditional classes to your buttons. If "isBig" is true, "big" should be ```.active```. If isBig is false, "small" should be ```.active```.
-- Add basic functionality: clicking "small" should set "isBig" to false, and clicking "big" should set it to true.
-- In your ```<style>``` section, create a new ```img``` class ```.big```, with a larger image size.
-- Add a conditional class to your ```<img>``` tags: if "isBig" is true, it should have the ```.big``` class and should appear larger.
+Now we have a problem: our form is no longer working! Can you see why?
 
-Small:
-![image](demo_screenshots/step-5a.png) 
+It's trying to push to `images`. But that's in `App.vue`, while our form is now in a separate component.
 
-Big:
-![image](demo_screenshots/step-5b.png)
+To fix this, we need to pass information _up_ from our child component (`Form.vue`), to the parent (`App.vue`).
 
-### Step 6: Conditional rendering
-_Concepts: v-if and v-else_
+We can do this with props and event emits:
+- In your `<Form>` component, make sure you're saving the input url in your `data` 
+- Add an `$emit` to your form submit, passing a name of your event, and your `url`.
+- In the parent `App.vue`, add an event listener to your `<Form>` component. When it "hears" your Form's submit event, it should run the `addImage()` function. 
+  - For example, if you named your `Form`'s `$emit` event "submitted", your `App` should listen for `@submitted`. 
+  - `addImage()` should accept the url as a parameter.
 
-Finally, let's use conditional rendering to hide or show our input form. Instead we should show a button saying "Add images!". Clicking the button should show the form.
+### Step 3: Create a Featured Image 
+_Concepts: [passing props](https://www.w3schools.com/vue/vue_props.php), [event emits](https://vuejs.org/guide/components/events.html), [conditional render](https://vuejs.org/guide/essentials/conditional.html)_
 
-- In App.vue, create a button "Add images!"
-- Create "showForm" data and initialize it to "false"
-- Add a `v-if` to your form, so it only renders (aka displays) if "showForm" is true. You should see your form disappear.
-- Add a click handler to your "Add images!" button, so it toggles `showForm` between true & false. Now your form should disappear and reappear when you click the button.
+Let's build our featured image. 
 
-Finally, let's clarify our button text: when the form is hidden, the button should say "Add images!" But when the form is showing, let's change the button text to "Hide form"
-- Wrap your button text in an HTML tag (like `<p>`, so we have something to add the `v-if` & `v-else` to).
-- In the same button, add a second tag of text that says "Hide form"
-- Add a `v-if` and `v-else` to your 2 possible button texts: "Add images!" should show when `showForm` is false, and "Hide form" should show when it's true.
+Remember:
+- We will need to click an image in our `ImageGrid` component, and have it appear in our `Featured` component. So we'll need to pass some data around.
+- When we're passing data throughout app, we need to follow the connections in our app's tree structure. This means that we _cannot_ pass data directly between sibling components. We need to pass through the _lowest common ancestor_:
+![image](readme-images/lca-2.png)
+![image](readme-images/lca-1.png)
 
-Hidden form:
-![image](demo_screenshots/step-6a.png)
+Let's break this down into some sub-steps:
+1. Create a variable in your `Content`'s `data` to hold your `featured` image URL.
 
-With form:
-![image](demo_screenshots/step-6b.png)
+2. Add an `@click` and event `$emit` to all `<img>`s in your `ImageGrid` component: when an image is clicked, it should `emit` that URL.
+
+3. Add an event listener to the `<imageGrid>` component in the parent `Content`. When it "hears" your image click event, it should update your `featured` value to the received URL.
+
+4. Pass the `featured` URL down as a prop to your `<Featured>` component. Remember to receive it in the child component `props` too.
+
+5. In your `Featured.vue` component, render your featured image. This should only register _if_ a featured image has been set. Otherwise, nothing should show.
