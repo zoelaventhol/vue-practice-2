@@ -1,7 +1,7 @@
 <template>
     <div class="Content">
         <!-- render featured image grid & pass featured data -->
-        <Featured />
+        <Featured :featured="featured"/>
 
         <!-- Render image grid & pass images to component. Add event listener to update "featured" @setFeatured -->
         <ImageGrid 

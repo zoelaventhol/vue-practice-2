@@ -1,7 +1,6 @@
 <template>
     <div class="Featured">
-        [featured image]
-        <img :src="featured"/>
+        <img v-if="featured" :src="featured"/>
     </div>
 </template>
     
@@ -19,4 +18,9 @@
 </script>
     
 <style>
+/* add style to feat img */
+.Featured img {
+    height: 200px;
+    border: 8px solid gray
+}
 </style>
