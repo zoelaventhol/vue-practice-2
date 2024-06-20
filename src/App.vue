@@ -25,11 +25,6 @@
             </form>
         </div>
 
-        <!-- FEATURED IMAGE-->
-        <div class="Featured">
-            <img v-if="this.featured" :src="this.featured" class="big"/>
-        </div>
-
         <!-- IMAGE GRID PORTION-->
         <div class="ImageGrid">
             <!-- BIG & SMALL BUTTONS -->
@@ -47,7 +42,6 @@
                     v-for="url in images" 
                     :src = "url"
                     :class="{ big: isBig }"
-                    @click="setFeatured(url)"
                 />
             </div>
         </div>
@@ -71,9 +65,7 @@
             return {
                 // Add variables to save url from input, and to save all image urls together
                 url: "",
-                featured: null,
                 images: [],
-                // add variable to show or hide form
                 showForm: false,
                 isBig: false
             }
@@ -85,10 +77,6 @@
                 this.images.push(this.url);
                 // reset the form to blank
                 this.url = "";
-            },
-            setFeatured(url) {
-                // set url of clicked image as the featured
-                this.featured = url;
             },
             // toggle isBig true or false
             toggle(state) {
@@ -108,7 +96,7 @@
         text-align: center;
     }
 
-    input, button, .Featured {
+    input, button {
         margin-bottom: 2em;
     }
 
