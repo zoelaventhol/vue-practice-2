@@ -3,29 +3,54 @@
     - We write it in HTML-->
 <template>
     <div class="App">
-        <h1>Picture time! 📸</h1>
+        <div class ="Form">
+            <h1>Picture time! 📸</h1>
+            
+            <!-- INPUT FORM -->
+            <!-- button with @click to toggle showForm -->
+            <button @click="showForm = !showForm">
+                <!-- Conditionally change button text: if form is showing, button should say "Hide form" -->
+                <p v-if="showForm">Hide form 🙈</p>
+                <!-- Else (if form is hidden), should say "Add images!" -->
+                <p v-else>Add images! 🖼️</p>
+            </button>
+            <!-- Add v-if to form, so it only renders when "showForm" is true -->
+            <form v-if="showForm">
+                Add image: 
+                <!-- Add v-model to save input as a variable in data -->
+                <input type="text" v-model="url"/>
+                <br />
+                <!-- Add @click event handler. ".prevent" to prevent the page refreshing. -->
+                <button @click.prevent="addImage">Submit</button>
+            </form>
+        </div>
 
-        <!-- button with @click to toggle showForm -->
-        <button @click="showForm = !showForm">
-            <!-- Conditionally change button text: if form is showing, button should say "Hide form" -->
-            <p v-if="showForm">Hide form</p>
-            <!-- Else (if form is hidden), should say "Add images!" -->
-            <p v-else>Add images!</p>
-        </button>
-        
-        <!-- INPUT FORM -->
-        <!-- Add v-if to form, so it only renders when "showForm" is true -->
-        <form v-if="showForm">
-            Add image: 
-            <!-- Add v-model to save input as a variable in data -->
-            <input type="text" v-model="url"/>
-            <br />
-            <!-- Add @click event handler. ".prevent" to prevent the page refreshing. -->
-            <button @click.prevent="addImage">Submit</button>
-        </form>
+        <!-- FEATURED IMAGE-->
+        <div class="Featured">
+            <img v-if="this.featured" :src="this.featured" class="big"/>
+        </div>
 
-        <!-- Render component -->
-        <ImageGrid :images="images" />
+        <!-- IMAGE GRID PORTION-->
+        <div class="ImageGrid">
+            <!-- BIG & SMALL BUTTONS -->
+            <div class = "buttons">
+                <!-- Add click handlers to toggle "isBig" data -->
+                <!-- Add conditional class "active": for Big when "isBig" is true, for Small when false -->
+                <button @click="toggle(true)" :class="{ active: isBig }">Big</button>
+                <button @click="toggle(false)" :class="{ active: !isBig }">Small</button>
+            </div>
+            <!-- IMAGES -->
+            <div class = "image-grid">
+                <!-- Create an <img> tag for each of your URLs using a v-for loop. Set your URL as the src attribute. -->
+                <!-- Add conditional class "big" when "isBig" is true -->
+                <img 
+                    v-for="url in images" 
+                    :src = "url"
+                    :class="{ big: isBig }"
+                    @click="setFeatured(url)"
+                />
+            </div>
+        </div>
     </div>
 </template>
     
@@ -34,23 +59,23 @@
     - We write them in Javascript. -->
 <script>
     // import component (by file path)
-    import ImageGrid from "./components/ImageGrid.vue";
 
     export default {
         //  The name of our component. It should match the file name.
         name: 'App',
         // This is where we list any components we import.
         components: {
-            ImageGrid
         },
         // This is where we create variables (in the return statement)
         data() {
             return {
                 // Add variables to save url from input, and to save all image urls together
                 url: "",
+                featured: null,
                 images: [],
                 // add variable to show or hide form
-                showForm: false
+                showForm: false,
+                isBig: false
             }
         },
         // This is where we define our functions.
@@ -61,7 +86,14 @@
                 // reset the form to blank
                 this.url = "";
             },
- 
+            setFeatured(url) {
+                // set url of clicked image as the featured
+                this.featured = url;
+            },
+            // toggle isBig true or false
+            toggle(state) {
+                this.isBig = state
+            }
         }
     }
 </script>
@@ -76,7 +108,7 @@
         text-align: center;
     }
 
-    input, button {
+    input, button, .Featured {
         margin-bottom: 2em;
     }
 
@@ -104,5 +136,16 @@
         object-fit: cover;
         /* round the corners */
         border-radius: 10%;
+    }
+
+    /* Create "active" class */
+    .active {
+        color: red;
+        border: 2px solid red;
+    }
+
+    /* Create "big" class */
+    .big {
+        height: 200px;
     }
 </style>
